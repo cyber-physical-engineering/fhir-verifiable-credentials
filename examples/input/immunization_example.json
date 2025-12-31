@@ -1,0 +1,15 @@
+{
+  "resourceType": "Immunization",
+  "status": "completed",
+  "patient": {"reference": "Patient/123", "display": "Jane Doe"},
+  "occurrenceDateTime": "2025-01-01",
+  "vaccineCode": {
+    "coding": [
+      {"system": "http://hl7.org/fhir/sid/cvx", "code": "207", "display": "COVID-19"}
+    ]
+  },
+  "lotNumber": "LOT-ABC-123",
+  "performer": [
+    {"function": {"text": "Administering Provider"}, "actor": {"display": "Dr. Smith"}}
+  ]
+}
