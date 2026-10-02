@@ -1,17 +1,18 @@
-"""W3C Verifiable Credential Builder.
+"""Builds and signs a credential in the W3C Verifiable Credentials shape.
 
-This is a minimal reference implementation intended for demos and integration
-scaffolding. Production implementations should use proper JSON-LD canonicalization
-and standardized proof suites.
+A minimal builder for demos. The proof signs the credential as sorted-key JSON,
+not a JSON-LD canonical form, and labels itself Ed25519Signature2020 without
+being that suite. A real implementation needs JSON-LD canonicalization and a
+standard proof suite.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Any, Optional
 import json
-import hashlib
+import uuid
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+from typing import Any
 
 from .crypto_signer import CryptoSigner
 
@@ -25,10 +26,10 @@ class VerifiableCredential:
     type: list[str]
     issuer: str
     issuance_date: datetime
-    expiration_date: Optional[datetime]
+    expiration_date: datetime | None
     credential_subject: dict[str, Any]
-    proof: Optional[dict[str, Any]] = None
-    credential_status: Optional[dict[str, Any]] = None
+    proof: dict[str, Any] | None = None
+    credential_status: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         vc = {
@@ -52,10 +53,10 @@ class VerifiableCredential:
 
 
 class VCBuilder:
-    CONTEXT_V2 = [
+    CONTEXT_V2 = (
         "https://www.w3.org/ns/credentials/v2",
         "https://w3id.org/security/suites/ed25519-2020/v1",
-    ]
+    )
 
     def __init__(self, issuer_did: str, signer: CryptoSigner):
         self.issuer_did = issuer_did
@@ -69,18 +70,11 @@ class VCBuilder:
     ) -> VerifiableCredential:
         now = datetime.now(timezone.utc)
 
-        content_hash = hashlib.sha256(
-            json.dumps(subject, sort_keys=True).encode()
-        ).hexdigest()[:16]
-
-        expiration = None
-        if valid_days:
-            # keep it simple; not exact to the day
-            expiration = now.replace(year=now.year + 1)
+        expiration = now + timedelta(days=valid_days) if valid_days else None
 
         return VerifiableCredential(
-            context=self.CONTEXT_V2,
-            id=f"urn:uuid:{content_hash}",
+            context=list(self.CONTEXT_V2),
+            id=f"urn:uuid:{uuid.uuid4()}",
             type=["VerifiableCredential", credential_type],
             issuer=self.issuer_did,
             issuance_date=now,

@@ -1,11 +1,10 @@
-# FHIR Verifiable Credentials - Docker Image
-# Converts HL7 FHIR resources into W3C Verifiable Credentials
+# FHIR Verifiable Credentials: Docker image for the demo API
+# /convert signs with a per-request key; /verify checks required fields only
 
 FROM python:3.11-slim
 
 LABEL org.opencontainers.image.title="fhir-verifiable-credentials"
-LABEL org.opencontainers.image.description="Convert HL7 FHIR resources into W3C Verifiable Credentials"
-LABEL org.opencontainers.image.vendor="Big Data Plumbing"
+LABEL org.opencontainers.image.description="Turn a FHIR R4 Immunization record into an Ed25519-signed credential in the W3C Verifiable Credentials shape"
 
 WORKDIR /app
 
