@@ -5,19 +5,26 @@ from pathlib import Path
 
 import typer
 
-from ..core.crypto_signer import Ed25519Signer
-from ..core.vc_builder import VCBuilder
-from ..core.fhir_parser import parse_fhir_resource
 from ..adapters.immunization import ImmunizationAdapter
+from ..core.crypto_signer import Ed25519Signer
+from ..core.fhir_parser import parse_fhir_resource
+from ..core.vc_builder import VCBuilder
 
-app = typer.Typer(add_completion=False, help="FHIR → Verifiable Credentials CLI")
+app = typer.Typer(
+    add_completion=False,
+    help="Turn a FHIR Immunization record into a signed Verifiable Credential",
+)
 
 
 @app.command()
 def convert(
     input_path: Path = typer.Argument(..., exists=True, readable=True, help="FHIR JSON file"),
-    issuer: str = typer.Option(..., "--issuer", help="Issuer DID (e.g., did:web:hospital.example.com)"),
-    key: Path = typer.Option(..., "--key", exists=True, readable=True, help="Ed25519 private key PEM"),
+    issuer: str = typer.Option(
+        ..., "--issuer", help="Issuer DID (e.g., did:web:hospital.example.com)"
+    ),
+    key: Path = typer.Option(
+        ..., "--key", exists=True, readable=True, help="Ed25519 private key PEM"
+    ),
     output: Path = typer.Option(Path("vc.json"), "--output", help="Output VC JSON path"),
 ) -> None:
     """Convert a FHIR resource JSON file into a signed Verifiable Credential."""

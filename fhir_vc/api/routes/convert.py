@@ -5,10 +5,10 @@ from typing import Any
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from ...core.crypto_signer import Ed25519Signer
-from ...core.vc_builder import VCBuilder
-from ...core.fhir_parser import parse_fhir_resource
 from ...adapters.immunization import ImmunizationAdapter
+from ...core.crypto_signer import Ed25519Signer
+from ...core.fhir_parser import parse_fhir_resource
+from ...core.vc_builder import VCBuilder
 
 router = APIRouter(prefix="", tags=["convert"])
 
@@ -16,7 +16,7 @@ router = APIRouter(prefix="", tags=["convert"])
 class ConvertRequest(BaseModel):
     fhir: dict[str, Any]
     issuer_did: str
-    # For demo purposes only: allow ephemeral signing
+    # Demo API: it signs with a fresh key generated for each request.
     ephemeral_key: bool = True
 
 
@@ -24,7 +24,14 @@ class ConvertRequest(BaseModel):
 def convert(req: ConvertRequest) -> dict[str, Any]:
     resource = parse_fhir_resource(req.fhir)
 
-    signer = Ed25519Signer.generate() if req.ephemeral_key else Ed25519Signer.generate()
+    if not req.ephemeral_key:
+        return {
+            "error": (
+                "This demo API signs with a key generated per request. "
+                "To sign with your own key, use the CLI with --key."
+            )
+        }
+    signer = Ed25519Signer.generate()
     builder = VCBuilder(issuer_did=req.issuer_did, signer=signer)
 
     if resource.resource_type == "Immunization":

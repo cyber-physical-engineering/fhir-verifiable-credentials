@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "fhir-verifiable-credentials"
 version = "0.1.0"
-description = "Convert HL7 FHIR resources into W3C Verifiable Credentials for patient-owned health data."
+description = "Turn a FHIR R4 Immunization record into an Ed25519-signed credential in the W3C Verifiable Credentials shape."
 readme = "README.md"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "Big Data Plumbing", email = "contact@bigdataplumbing.io"}
+    {name = "James Thornton"}
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Healthcare Industry",
     "License :: OSI Approved :: Apache Software License",
@@ -44,10 +44,10 @@ dev = [
 fhir-vc = "fhir_vc.cli.main:app"
 
 [project.urls]
-Homepage = "https://github.com/bigdataplumbing/fhir-verifiable-credentials"
-Documentation = "https://github.com/bigdataplumbing/fhir-verifiable-credentials#readme"
-Repository = "https://github.com/bigdataplumbing/fhir-verifiable-credentials"
-Issues = "https://github.com/bigdataplumbing/fhir-verifiable-credentials/issues"
+Homepage = "https://github.com/cyber-physical-engineering/fhir-verifiable-credentials"
+Documentation = "https://github.com/cyber-physical-engineering/fhir-verifiable-credentials#readme"
+Repository = "https://github.com/cyber-physical-engineering/fhir-verifiable-credentials"
+Issues = "https://github.com/cyber-physical-engineering/fhir-verifiable-credentials/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["fhir_vc"]
@@ -55,6 +55,12 @@ packages = ["fhir_vc"]
 [tool.ruff]
 line-length = 100
 target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "RUF"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Argument", "typer.Option"]
 
 [tool.mypy]
 python_version = "3.9"
