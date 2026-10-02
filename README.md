@@ -4,6 +4,8 @@ A Python tool that turns one HL7 FHIR R4 Immunization record into a signed crede
 
 **Status: prototype.** 3 tests pass and `ruff check .` is clean on Python 3.9 (October 2026). The walkthrough below was run as written. CI was green on both December 2025 runs.
 
+[![CI](https://github.com/cyber-physical-engineering/fhir-verifiable-credentials/actions/workflows/ci.yml/badge.svg)](https://github.com/cyber-physical-engineering/fhir-verifiable-credentials/actions/workflows/ci.yml)
+
 James Thornton set the architecture and requirements. The code was written with AI-assisted development in late 2025. The tests and checks were re-run in October 2026.
 
 ## What it does
